@@ -1,0 +1,36 @@
+{
+  "name": "life-partner",
+  "private": true,
+  "version": "1.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --port 4173",
+    "typecheck": "tsc -b",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test --trace off",
+    "icons": "node scripts/make-icons.mjs",
+    "test:sql": "bash scripts/test-sql.sh"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.119.2",
+    "dexie": "^4.4.7",
+    "dexie-react-hooks": "^4.4.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "fake-indexeddb": "^6.2.8",
+    "jsdom": "^31.0.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.1"
+  }
+}
