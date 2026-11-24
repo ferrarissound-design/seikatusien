@@ -29,7 +29,7 @@ describe('データベースのバージョン更新', () => {
 
     const v2 = new LifePartnerDB(name);
     await v2.open();
-    expect(v2.verno).toBe(2);
+    expect(v2.verno).toBeGreaterThanOrEqual(2); // 以後のバージョン追加（v3: 体重）でも、v1 のデータが残ることを確認する
     expect((await v2.checklists.get('c1'))?.showOnHome).toBe(1);
     expect((await v2.checklists.get('c1'))?.name).toBe('仕事');
     expect((await v2.transactions.get('t1'))?.amount).toBe(1234);
