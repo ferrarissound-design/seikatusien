@@ -308,7 +308,8 @@ a {
   width: 100%;
 }
 .btn.small {
-  min-height: 40px;
+  /* タップ領域は 44px 以上（アクセシビリティ） */
+  min-height: 44px;
   padding: 6px 14px;
   font-size: 0.9rem;
 }
@@ -556,7 +557,7 @@ textarea:focus {
 }
 .segmented button {
   flex: 1;
-  min-height: 40px;
+  min-height: 44px;
   border: none;
   border-radius: 999px;
   background: transparent;
@@ -742,7 +743,7 @@ textarea:focus {
   color: #fff;
 }
 .toast .btn {
-  min-height: 40px;
+  min-height: 44px;
   background: transparent;
   color: inherit;
   border-color: currentColor;
@@ -989,7 +990,7 @@ details.disclosure[open] > summary::before {
 }
 .chip {
   flex: none;
-  min-height: 40px;
+  min-height: 44px;
   padding: 6px 14px;
   border-radius: 999px;
   border: 1px solid var(--border);
