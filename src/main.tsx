@@ -4,7 +4,7 @@ import './styles.css';
 import { App } from './App';
 import { openInitialDb, startSync } from './sync/manager';
 import { startDailyMaintenance } from './db/daily';
-import { registerServiceWorker, requestPersistentStorage } from './pwa';
+import { registerServiceWorker, requestPersistentStorage, trackKeyboard } from './pwa';
 import { emit } from './lib/events';
 
 async function boot() {
@@ -27,6 +27,7 @@ async function boot() {
   );
 
   registerServiceWorker();
+  trackKeyboard();
   void requestPersistentStorage();
   void startSync().catch(() => emit({ type: 'toast', message: 'クラウドに接続できませんでした。端末には保存されています。' }));
   startDailyMaintenance();

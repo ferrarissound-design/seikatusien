@@ -90,3 +90,19 @@ export async function getStorageInfo(): Promise<StorageInfo> {
     return { persisted: false };
   }
 }
+
+/**
+ * iOS でキーボードが表示されたとき、見えている領域（visualViewport）に合わせて
+ * 下からのシートを持ち上げる。CSS 変数 --kb に「キーボードで隠れている高さ」を入れる。
+ */
+export function trackKeyboard() {
+  const vv = window.visualViewport;
+  if (!vv) return;
+  const update = () => {
+    const hidden = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    document.documentElement.style.setProperty('--kb', `${Math.round(hidden)}px`);
+  };
+  vv.addEventListener('resize', update);
+  vv.addEventListener('scroll', update);
+  update();
+}

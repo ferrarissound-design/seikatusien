@@ -32,6 +32,7 @@
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --dur: 160ms;
+  --kb: 0px;
   color-scheme: light;
 }
 
@@ -625,6 +626,8 @@ textarea:focus {
 .sheet-backdrop {
   position: fixed;
   inset: 0;
+  /* キーボード表示中はその分だけ持ち上げる */
+  bottom: var(--kb);
   z-index: 40;
   background: rgba(10, 12, 14, 0.45);
   display: flex;
@@ -635,7 +638,7 @@ textarea:focus {
 .sheet {
   width: 100%;
   max-width: 640px;
-  max-height: calc(100dvh - var(--safe-top) - 24px);
+  max-height: calc(100dvh - var(--safe-top) - 24px - var(--kb));
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
