@@ -100,3 +100,41 @@ test.describe('ブランドと励まし', () => {
     await expect(gentle).not.toContainText(/[A-Za-z]/);
   });
 });
+
+test('文字サイズ最大でも「◯日」が途中で改行されない', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.clock.install({ time: new Date('2027-01-20T10:00:00+09:00') });
+  await start(page);
+  await page.goto('/#/settings/display');
+  await page.getByRole('group', { name: '文字の大きさ' }).getByRole('button', { name: 'とても大きい', exact: true }).click();
+  await page.goto('/#/money/setup');
+  await page.getByLabel('毎月の給料日').selectOption('25');
+  await page.getByLabel('いまの残高').fill('123456');
+  await page.getByRole('button', { name: '保存' }).click();
+  await expect(page.getByTestId('money-today')).toBeVisible();
+  await page.goto('/#/home');
+  const days = page.locator('.hero-caption strong').first();
+  await expect(days).toHaveText('5日');
+  // 「5」と「日」は別のテキストとして描画されるため、行の位置（上端）が同じかで判定する
+  const tops = await days.evaluate((el) => {
+    const r = document.createRange();
+    r.selectNodeContents(el);
+    return [...new Set(Array.from(r.getClientRects()).map((x) => Math.round(x.top)))];
+  });
+  expect(tops).toHaveLength(1);
+});
+
+test('文字サイズ最大・未設定でも「計算の内訳」が途中で改行されない', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await start(page);
+  await page.goto('/#/settings/display');
+  await page.getByRole('group', { name: '文字の大きさ' }).getByRole('button', { name: 'とても大きい', exact: true }).click();
+  await page.goto('/#/home');
+  const link = page.getByTestId('money-card').locator('xpath=ancestor::section[1]').getByRole('link', { name: '計算の内訳' });
+  const tops = await link.evaluate((el) => {
+    const r = document.createRange();
+    r.selectNodeContents(el);
+    return [...new Set(Array.from(r.getClientRects()).map((x) => Math.round(x.top)))];
+  });
+  expect(tops).toHaveLength(1);
+});

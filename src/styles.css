@@ -1068,6 +1068,8 @@ details.disclosure[open] > summary::before {
 .hero-caption strong {
   color: var(--hero-text);
   font-size: 1.05rem;
+  /* 「5日」が「5」と「日」に分かれて改行されないように */
+  white-space: nowrap;
 }
 .hero-divider {
   height: 1px;
@@ -1086,6 +1088,7 @@ details.disclosure[open] > summary::before {
 .hero-balance strong {
   color: var(--hero-text);
   font-size: 1.15rem;
+  white-space: nowrap;
 }
 .hero-budget {
   margin-top: 10px;
@@ -1181,4 +1184,14 @@ details.disclosure[open] > summary::before {
   font-size: 1.4rem;
   line-height: 1;
   flex: none;
+}
+
+/* カード見出しの右側のリンク（「計算の内訳」「すべて」など）は単語の途中で改行しない。
+   幅が足りないときは、見出しとリンクを別の行に分ける */
+.card-title {
+  flex-wrap: wrap;
+}
+.card-title .btn,
+.money-hero-link {
+  white-space: nowrap;
 }
