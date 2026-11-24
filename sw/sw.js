@@ -9,6 +9,7 @@
 const VERSION = '__BUILD_VERSION__';
 const CACHE = `lp-shell-${VERSION}`;
 const PRECACHE = __PRECACHE__;
+const BASE = '__BASE__'; // 公開先のパス（例 '/' や '/seikatusien/'）
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -36,14 +37,14 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // 外部通信（Supabase等）は素通し
-  if (url.pathname === '/sw.js') return;
+  if (url.pathname === `${BASE}sw.js`) return;
 
   if (req.mode === 'navigate') {
     // アプリ本体：キャッシュを優先（オフライン・電波が弱い場所でもすぐ開く）
     event.respondWith(
       (async () => {
         const cache = await caches.open(CACHE);
-        const cached = await cache.match('/index.html');
+        const cached = await cache.match(`${BASE}index.html`);
         if (cached) return cached;
         try {
           return await fetch(req);
@@ -64,7 +65,7 @@ self.addEventListener('fetch', (event) => {
       if (cached) return cached;
       try {
         const res = await fetch(req);
-        if (res.ok && (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/icons/'))) {
+        if (res.ok && (url.pathname.startsWith(`${BASE}assets/`) || url.pathname.startsWith(`${BASE}icons/`))) {
           cache.put(req, res.clone());
         }
         return res;
@@ -86,17 +87,17 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: '/icons/icon-192.png',
-      badge: '/icons/icon-192.png',
+      icon: `${BASE}icons/icon-192.png`,
+      badge: `${BASE}icons/icon-192.png`,
       tag: data.tag,
-      data: { url: data.url || '/' },
+      data: { url: data.url || BASE },
     }),
   );
 });
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const target = (event.notification.data && event.notification.data.url) || '/';
+  const target = (event.notification.data && event.notification.data.url) || BASE;
   event.waitUntil(
     (async () => {
       const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });

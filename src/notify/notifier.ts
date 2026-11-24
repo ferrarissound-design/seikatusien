@@ -48,7 +48,7 @@ async function showDeviceNotification(title: string, body: string, tag: string) 
   if (!('Notification' in window) || Notification.permission !== 'granted') return;
   try {
     const reg = await navigator.serviceWorker?.getRegistration();
-    if (reg) await reg.showNotification(title, { body, tag, icon: '/icons/icon-192.png', badge: '/icons/icon-192.png' });
+    if (reg) await reg.showNotification(title, { body, tag, icon: `${import.meta.env.BASE_URL}icons/icon-192.png`, badge: `${import.meta.env.BASE_URL}icons/icon-192.png` });
     else new Notification(title, { body, tag });
   } catch {
     /* 通知に失敗してもアプリ内通知は残る */

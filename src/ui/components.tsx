@@ -70,8 +70,16 @@ export function Sheet({ title, onClose, children, actions }: { title: string; on
     window.addEventListener('keydown', onKey);
     const first = ref.current?.querySelector<HTMLElement>('input, textarea, select');
     // iOS で自動的にキーボードが出て画面が跳ねないよう、自動フォーカスは最初の入力欄のみ・少し遅らせる
-    if (first && first.dataset.autofocus === 'true') setTimeout(() => first.focus(), 50);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    if (first && first.dataset.autofocus === 'true') {
+      timer = setTimeout(() => {
+        // 利用者がすでに別の欄を触っていたら、フォーカスを奪わない（入力先が入れ替わる事故を防ぐ）
+        const active = document.activeElement;
+        if (!active || active === document.body || !ref.current?.contains(active)) first.focus();
+      }, 50);
+    }
     return () => {
+      if (timer) clearTimeout(timer);
       document.body.style.overflow = prev;
       window.removeEventListener('keydown', onKey);
     };

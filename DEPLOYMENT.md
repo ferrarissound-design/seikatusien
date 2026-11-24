@@ -8,7 +8,7 @@
 ## 0. 全体の流れ
 
 1. （GitHub）変更を `main` ブランチに取り込む
-2. （Vercel）リポジトリをつなぎ、公開する → この時点で「端末にのみ保存」モードで使えます
+2. （GitHub Pages または Vercel）公開する → この時点で「端末にのみ保存」モードで使えます
 3. （任意・推奨）Supabase を設定し、クラウド同期を有効にする
 4. （任意・試験的）Web Push 通知を設定する
 
@@ -24,7 +24,27 @@
 
 ---
 
-## 2. Vercel：公開する
+## 2-A. GitHub Pages で公開する（追加のサービス登録なし・いちばん簡単）
+
+公開先：`https://<GitHubのユーザー名>.github.io/seikatusien/`
+
+1. このリポジトリの **Settings → Pages** を開きます。
+2. 「Build and deployment」の **Source** を **「GitHub Actions」** に変更します。
+   （「Deploy from a branch」のままだと README が表示されるだけで、アプリは動きません）
+3. プルリクエストを `main` にマージすると、`Deploy to GitHub Pages` ワークフローが自動で動き、数分で公開されます。
+   進み具合は **Actions** タブで確認できます。手動で動かすときは Actions →「Deploy to GitHub Pages」→「Run workflow」。
+4. 公開 URL を Safari で開き、ホーム画面に追加します。
+
+Supabase を使う場合（3章のあと）：**Settings → Secrets and variables → Actions → Variables** に
+`VITE_SUPABASE_URL` と `VITE_SUPABASE_ANON_KEY` を登録し、もう一度ワークフローを実行します（anon キーは公開してよいキーです。service_role キーは登録しないでください）。
+Supabase の「Authentication → URL Configuration」の Site URL には Pages の URL を入れてください。
+
+> GitHub Pages ではレスポンスヘッダーを設定できないため、CSP は HTML 内の `<meta>` で設定しています（`frame-ancestors` 等の一部はヘッダーでしか効かず、Vercel の方がやや堅くなります）。
+> 非公開リポジトリで Pages を使うには GitHub の有料プランが必要な場合があります。
+
+Vercel を使う場合は次の 2-B へ。どちらか一方で十分です。
+
+## 2-B. Vercel：公開する
 
 1. Safari で **vercel.com** を開き、「Sign Up」→「Continue with GitHub」。
 2. 「Add New…」→「Project」→ このリポジトリの「Import」。
