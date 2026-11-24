@@ -9,6 +9,7 @@ import type {
   FixedCost,
   SavingsGoal,
   Reminder,
+  WeightEntry,
   AppSettings,
   OutboxEntry,
   Conflict,
@@ -35,6 +36,7 @@ export class LifePartnerDB extends Dexie {
   fixedCosts!: Table<FixedCost, string>;
   savingsGoals!: Table<SavingsGoal, string>;
   reminders!: Table<Reminder, string>;
+  weights!: Table<WeightEntry, string>;
   settings!: Table<AppSettings, string>;
   outbox!: Table<OutboxEntry, number>;
   conflicts!: Table<Conflict, string>;
@@ -74,6 +76,11 @@ export class LifePartnerDB extends Dexie {
             if (c.showOnHome === undefined) c.showOnHome = 1;
           });
       });
+
+    // v3: 体重の記録を追加（既存データの変換は不要）
+    this.version(3).stores({
+      weights: 'id, deleted, date',
+    });
   }
 }
 

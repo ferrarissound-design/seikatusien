@@ -168,7 +168,7 @@ export function defaultSettings(): AppSettings {
     updatedAt: ts,
     serverVersion: 0,
     deleted: 0,
-    features: { checklists: true, tasks: true, money: true },
+    features: { checklists: true, tasks: true, money: true, weight: false },
     paydayDay: null,
     paydayWeekendRule: 'before',
     balanceAmount: null,

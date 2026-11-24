@@ -84,6 +84,12 @@ const schemas: Record<SyncTable, Record<string, Check>> = {
     targetId: nullable(str(200)),
     enabled: flag,
   },
+  weights: {
+    date,
+    time: nullable(time),
+    weightCg: int(100, 50000),
+    memo: str(1000),
+  },
   settings: {
     features: (v) => !!v && typeof v === 'object',
     paydayDay: nullable(int(1, 31)),

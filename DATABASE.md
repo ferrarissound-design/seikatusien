@@ -19,6 +19,7 @@ DB 名：未ログイン `lifepartner-local`、ログイン中 `lifepartner-u-<u
 | `fixedCosts` | name, amount, dayOfMonth(1-31), category, active |
 | `savingsGoals` | name, targetAmount, savedAmount |
 | `reminders` | kind, label, time, weekdays[], targetId, enabled |
+| `weights` | date, time("HH:MM"/null), weightCg（0.01kg 単位の整数。65.45kg → 6545）, memo。判定や目標は持たない |
 | `settings` | id='settings'。機能の表示、給料日、残高（balanceAmount + balanceAsOf）、予算、確保したい貯金、カテゴリー、表示設定 等 |
 
 ### 端末専用テーブル（同期しない）
@@ -44,11 +45,14 @@ DB 名：未ログイン `lifepartner-local`、ログイン中 `lifepartner-u-<u
 3. upgrade の中でデータを削除しない。変換できない値は既定値で補う。
 4. `tests/unit/db-migration.test.ts` に移行テストを追加する。
 
-現在のバージョン：**v2**（v1 → v2 で `reminders`・`notices` テーブルと `checklists.showOnHome` を追加。移行テスト済み）
+現在のバージョン：**v3**
+- v1 → v2：`reminders`・`notices` テーブルと `checklists.showOnHome` を追加
+- v2 → v3：`weights`（体重）テーブルを追加。既存データの変換なし。体重機能は初期オフ
+- どちらも移行テスト済み（`tests/unit/db-migration*.test.ts`）
 
 ## クラウドデータベース（Supabase / PostgreSQL）
 
-構築 SQL：`supabase/migrations/20261124000000_init.sql` → `20261124000100_rls.sql` の順に実行（2回実行しても壊れない）。
+構築 SQL：`supabase/migrations/20261124000000_init.sql` → `20261124000100_rls.sql` → `20261125000000_weights.sql` の順に実行（2回実行しても壊れない）。
 
 ### `public.records`
 
