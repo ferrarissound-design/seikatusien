@@ -166,6 +166,7 @@ function FeatureSettings() {
         <Toggle label="🎒 忘れ物チェック" checked={s.features.checklists} onChange={(v) => set('checklists', v)} />
         <Toggle label="✏️ タスク" checked={s.features.tasks} onChange={(v) => set('tasks', v)} />
         <Toggle label="👛 お金" checked={s.features.money} onChange={(v) => set('money', v)} />
+        <Toggle label="⚖️ 体重" description="体重を記録して、推移を見られます（目標や判定は表示しません）" checked={s.features.weight} onChange={(v) => set('weight', v)} />
       </Card>
       <Card>
         <Toggle

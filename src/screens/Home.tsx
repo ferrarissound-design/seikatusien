@@ -13,12 +13,14 @@ import { moneyCardState } from './moneyCardState';
 import { QuickExpense } from './QuickExpense';
 import { SyncBadge } from './SyncBadge';
 import { TaskSheet } from './Tasks';
+import { WeightSheet } from './Weight';
+import { formatKg, formatDiff, sortNewestFirst } from '../lib/weight';
 import type { CheckItem } from '../db/types';
 
 export function Home() {
   const settings = useSettings();
   const todayStr = useToday();
-  const [sheet, setSheet] = useState<'expense' | 'task' | null>(null);
+  const [sheet, setSheet] = useState<'expense' | 'task' | 'weight' | null>(null);
   if (!settings) return null;
   const f = settings.features;
 
@@ -41,6 +43,7 @@ export function Home() {
       {f.money && <MoneyCard onAdd={() => setSheet('expense')} />}
       {f.checklists && <ChecklistCard />}
       {f.tasks && <TodayTasksCard onAdd={() => setSheet('task')} />}
+      {f.weight && <WeightCard onAdd={() => setSheet('weight')} />}
       <UpcomingCard />
 
       <Card title="ショートカット">
@@ -85,6 +88,7 @@ export function Home() {
 
       {sheet === 'expense' && <QuickExpense onClose={() => setSheet(null)} />}
       {sheet === 'task' && <TaskSheet onClose={() => setSheet(null)} defaultDue={todayStr} />}
+      {sheet === 'weight' && <WeightSheet entry={null} onClose={() => setSheet(null)} />}
     </main>
   );
 }
@@ -387,6 +391,42 @@ function UpcomingCard() {
           })}
         </ul>
       )}
+    </Card>
+  );
+}
+
+/** 体重（設定でオンにしたときだけ表示）。目標や判定は出さず、最新の記録だけを示す */
+function WeightCard({ onAdd }: { onAdd: () => void }) {
+  const todayStr = useToday();
+  const list = useLiveQuery(async () => sortNewestFirst(await getDb().weights.toArray()).slice(0, 2), []);
+  if (!list) return null;
+  const [latest, prev] = list;
+  return (
+    <Card
+      title="体重"
+      icon="⚖️"
+      action={
+        <a className="btn ghost small" href={href('/weight')}>
+          記録を見る
+        </a>
+      }
+    >
+      <div data-testid="weight-card">
+        {latest ? (
+          <p style={{ marginBottom: 4 }}>
+            <span className="muted small">{latest.date === todayStr ? '今日' : formatShort(latest.date)}の記録 </span>
+            <strong className="num" style={{ fontSize: '1.4rem' }}>
+              {formatKg(latest.weightCg)}
+            </strong>
+            {prev && <span className="muted small"> （前回から {formatDiff(latest.weightCg - prev.weightCg)}）</span>}
+          </p>
+        ) : (
+          <p className="muted">まだ記録はありません。</p>
+        )}
+        <button type="button" className="btn primary block" onClick={onAdd}>
+          <Icon name="plus" /> 今日の体重を記録
+        </button>
+      </div>
     </Card>
   );
 }

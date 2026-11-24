@@ -10,6 +10,7 @@ import { TasksScreen } from './screens/Tasks';
 import { MoneyScreen } from './screens/Money';
 import { SettingsScreen } from './screens/settings/Settings';
 import { FocusScreen } from './screens/Focus';
+import { WeightScreen } from './screens/Weight';
 import { Onboarding } from './screens/Onboarding';
 import { useStore } from './lib/store';
 import { pwaState, applyUpdate } from './pwa';
@@ -75,6 +76,9 @@ function Shell() {
       break;
     case 'money':
       screen = <MoneyScreen />;
+      break;
+    case 'weight':
+      screen = <WeightScreen />;
       break;
     case 'settings':
       screen = <SettingsScreen />;
