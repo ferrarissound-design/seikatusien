@@ -67,3 +67,20 @@ test.describe('お金カード', () => {
     await expect(page.getByTestId('money-card')).toContainText('今月末まで、今日を含めて 7日');
   });
 });
+
+test.describe('保存状況の表示', () => {
+  test('短い文言で表示し、タップすると説明のある設定画面を開く', async ({ page }) => {
+    await start(page);
+    const badge = page.getByTestId('sync-badge');
+    await expect(badge).toContainText('このスマホだけに保存しています');
+    await expect(badge).not.toContainText('クラウドバックアップは未設定です');
+    // 色の点だけでなく、アイコン（形）と文字で伝える
+    await expect(badge.locator('svg').first()).toBeVisible();
+    await expect(page.locator('.status-dot')).toHaveCount(0);
+    const box = await badge.boundingBox();
+    expect(box!.height).toBeGreaterThanOrEqual(44);
+    await badge.click();
+    await expect(page.getByRole('heading', { name: '保存と同期' })).toBeVisible();
+    await expect(page.getByText('この端末への保存について')).toBeVisible();
+  });
+});

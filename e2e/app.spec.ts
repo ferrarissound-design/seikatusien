@@ -11,7 +11,7 @@ async function skipOnboarding(page: Page) {
 test('初回起動：設定をスキップしてホームが表示される', async ({ page }) => {
   await skipOnboarding(page);
   await expect(page.getByRole('navigation', { name: 'メインメニュー' })).toBeVisible();
-  await expect(page.getByText('この端末にのみ保存')).toBeVisible();
+  await expect(page.getByText('このスマホだけに保存しています')).toBeVisible();
 });
 
 test('忘れ物チェック：テンプレートから作成・チェックが再読み込み後も残る', async ({ page }) => {

@@ -1107,3 +1107,41 @@ details.disclosure[open] > summary::before {
   font-size: 0.875rem;
   margin: 8px 0 0;
 }
+
+/* ---------- 保存状況の表示 ---------- */
+.sync-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 6px 4px 6px 0;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+.sync-badge-icon {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.sync-badge-text {
+  display: block;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.sync-badge-detail {
+  display: block;
+  color: var(--text-2);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+.sync-badge-chev {
+  flex: none;
+  color: var(--text-2);
+}
