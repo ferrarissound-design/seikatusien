@@ -14,10 +14,11 @@ $RUN "$PGBIN/initdb" -D "$DIR" -U postgres >/dev/null
 $RUN "$PGBIN/pg_ctl" -D "$DIR" -o "-p $PORT -k $DIR -c listen_addresses=''" -w start >/dev/null
 PSQL="$RUN psql -h $DIR -p $PORT -U postgres -d postgres -v ON_ERROR_STOP=1 -q"
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
-$PSQL -f "$ROOT/supabase/tests/supabase_shim.sql"
+# SQL は呼び出し側のシェルで読み、標準入力で渡す（postgres ユーザーが作業ディレクトリを読めない CI 環境に対応）
+$PSQL < "$ROOT/supabase/tests/supabase_shim.sql"
 # 2回実行して冪等性も確認
 for i in 1 2; do
-  $PSQL -f "$ROOT/supabase/migrations/20261124000000_init.sql"
-  $PSQL -f "$ROOT/supabase/migrations/20261124000100_rls.sql"
+  $PSQL < "$ROOT/supabase/migrations/20261124000000_init.sql"
+  $PSQL < "$ROOT/supabase/migrations/20261124000100_rls.sql"
 done
-$PSQL -f "$ROOT/supabase/tests/rls_test.sql"
+$PSQL < "$ROOT/supabase/tests/rls_test.sql"
