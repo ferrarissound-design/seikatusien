@@ -84,3 +84,19 @@ test.describe('保存状況の表示', () => {
     await expect(page.getByText('この端末への保存について')).toBeVisible();
   });
 });
+
+test.describe('ブランドと励まし', () => {
+  test('Life Partner の名前は日付の見出しより控えめ、励ましの一言がある', async ({ page }) => {
+    await start(page);
+    const brand = page.locator('.brand');
+    await expect(brand).toContainText('Life Partner');
+    await expect(brand.locator('img')).toHaveAttribute('aria-hidden', 'true');
+    const brandSize = await brand.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+    const h1Size = await page.locator('h1').first().evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+    expect(brandSize).toBeLessThan(h1Size);
+    const gentle = page.locator('.gentle-card');
+    await expect(gentle).toHaveText(/ひとつずつで、大丈夫。/);
+    await expect(gentle.locator('[aria-hidden="true"]')).toHaveCount(1);
+    await expect(gentle).not.toContainText(/[A-Za-z]/);
+  });
+});

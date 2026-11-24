@@ -1145,3 +1145,39 @@ details.disclosure[open] > summary::before {
   flex: none;
   color: var(--text-2);
 }
+
+/* ---------- ブランド表示（日付の見出しより控えめに） ---------- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-2);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.brand img {
+  border-radius: 5px;
+  flex: none;
+}
+
+/* ---------- 励ましの一言 ---------- */
+.gentle-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--primary-soft);
+  color: var(--text);
+}
+.gentle-card p {
+  margin: 0;
+  font-weight: 600;
+}
+.gentle-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex: none;
+}

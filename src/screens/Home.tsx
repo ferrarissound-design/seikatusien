@@ -25,6 +25,10 @@ export function Home() {
   return (
     <main>
       <header style={{ paddingTop: 8 }}>
+        <div className="brand">
+          <img src={`${import.meta.env.BASE_URL}icons/brand-heart.svg`} alt="" aria-hidden="true" width={20} height={20} />
+          <span>Life Partner</span>
+        </div>
         <p className="muted" style={{ margin: 0 }}>
           今日は
         </p>
@@ -71,6 +75,13 @@ export function Home() {
           </a>
         </div>
       </Card>
+
+      <div className="gentle-card">
+        <span className="gentle-icon" aria-hidden="true">
+          🌱
+        </span>
+        <p>ひとつずつで、大丈夫。</p>
+      </div>
 
       {sheet === 'expense' && <QuickExpense onClose={() => setSheet(null)} />}
       {sheet === 'task' && <TaskSheet onClose={() => setSheet(null)} defaultDue={todayStr} />}
