@@ -9,6 +9,7 @@ import { formatJa, formatShort, addDays, diffDays } from '../lib/date';
 import { formatYen, fixedCostDueDates, getPayPeriod } from '../lib/money';
 import { toggleCheckItem, setTaskDone } from '../db/actions';
 import { useMoneyData } from './useMoneyData';
+import { moneyCardState } from './moneyCardState';
 import { QuickExpense } from './QuickExpense';
 import { SyncBadge } from './SyncBadge';
 import { TaskSheet } from './Tasks';
@@ -24,6 +25,10 @@ export function Home() {
   return (
     <main>
       <header style={{ paddingTop: 8 }}>
+        <div className="brand">
+          <img src={`${import.meta.env.BASE_URL}icons/brand-heart.svg`} alt="" aria-hidden="true" width={20} height={20} />
+          <span>Life Partner</span>
+        </div>
         <p className="muted" style={{ margin: 0 }}>
           今日は
         </p>
@@ -71,6 +76,13 @@ export function Home() {
         </div>
       </Card>
 
+      <div className="gentle-card">
+        <span className="gentle-icon" aria-hidden="true">
+          🌱
+        </span>
+        <p>ひとつずつで、大丈夫。</p>
+      </div>
+
       {sheet === 'expense' && <QuickExpense onClose={() => setSheet(null)} />}
       {sheet === 'task' && <TaskSheet onClose={() => setSheet(null)} defaultDue={todayStr} />}
     </main>
@@ -104,68 +116,95 @@ function MoneyCard({ onAdd }: { onAdd: () => void }) {
   const m = useMoneyData();
   if (!m) return null;
   const a = m.allowance;
-  const needsSetup = a.missing.includes('balance') && a.missing.includes('budget');
-  return (
-    <Card
-      title="今日使える金額"
-      icon="👛"
-      action={
-        <a className="btn ghost small" href={href('/money/breakdown')}>
-          計算の内訳
-        </a>
-      }
-    >
-      {needsSetup ? (
-        <div>
-          <p className="muted">残高か予算を登録すると、給料日まで1日あたりに使える目安を計算します。</p>
-          <a className="btn primary block" href={href('/money/setup')}>
-            お金の設定をする
+  const state = moneyCardState(m.settings, m.transactions);
+
+  // 未設定・記録のみ：金額（0円）は表示しない
+  if (state !== 'ready') {
+    return (
+      <Card
+        title="1日あたりの目安"
+        icon="👛"
+        action={
+          <a className="btn ghost small" href={href('/money/breakdown')}>
+            計算の内訳
           </a>
+        }
+      >
+        <div data-testid="money-card" data-state={state}>
+          {state === 'unset' ? (
+            <>
+              <p className="muted">残高か予算を登録すると、給料日まで1日あたりに使える目安を計算します。</p>
+              <a className="btn primary block" href={href('/money/setup')}>
+                お金の設定をする
+              </a>
+              <button type="button" className="btn outline block" style={{ marginTop: 12 }} onClick={onAdd}>
+                <Icon name="plus" /> 支出を記録
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="muted">残高か予算を登録すると、1日の目安が出ます。</p>
+              <button type="button" className="btn primary block" onClick={onAdd}>
+                <Icon name="plus" /> 支出を記録
+              </button>
+              <a className="btn outline block" style={{ marginTop: 12 }} href={href('/money/setup')}>
+                お金の設定をする
+              </a>
+            </>
+          )}
         </div>
-      ) : (
-        <>
-          <div className="spread" style={{ alignItems: 'flex-end' }}>
-            <div>
-              <div className="big-number" data-testid="today-remaining">
-                {formatYen(a.todayRemaining)}
-              </div>
-              <div className="muted small">
-                1日の目安 {formatYen(a.perDay)}
-                {a.spentToday > 0 && ` ・ 今日使った ${formatYen(a.spentToday)}`}
-              </div>
-            </div>
-            <div className="center" style={{ minWidth: 76 }}>
-              <div className="muted small">{a.period.hasPayday ? '給料日まで' : '月末まで'}</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 700 }} className="num">
-                {a.period.hasPayday ? `${a.period.daysUntilPayday}日` : `${a.period.daysRemaining}日`}
-              </div>
-            </div>
-          </div>
-          {a.shortfall > 0 && (
-            <p className="banner warn small" style={{ marginTop: 8 }}>
-              予定より {formatYen(a.shortfall)} 足りない見込みです。「計算の内訳」で調整方法を確認できます。
-            </p>
-          )}
-          {a.budget !== null && (
-            <div style={{ marginTop: 10 }}>
-              <div className="spread small muted">
-                <span>予算の使用</span>
-                <span className="num">
-                  {formatYen(a.budgetSpent)} / {formatYen(a.budget)}
-                </span>
-              </div>
-              <ProgressBar value={a.budgetSpent} max={a.budget} label="予算の使用状況" tone={a.budgetSpent > a.budget ? 'accent' : undefined} />
-            </div>
-          )}
-        </>
+      </Card>
+    );
+  }
+
+  return (
+    <section className="money-hero" data-testid="money-card" data-state="ready" aria-labelledby="money-hero-title">
+      <div className="money-hero-head">
+        <h2 id="money-hero-title">
+          <span aria-hidden="true">👛</span>1日あたりの目安
+        </h2>
+        <a className="money-hero-link" href={href('/money/breakdown')}>
+          計算の内訳 <Icon name="chev" size={18} />
+        </a>
+      </div>
+      <p className="hero-amount num" data-testid="daily-allowance">
+        {formatYen(a.perDay)}
+        <small>／日</small>
+      </p>
+      <p className="hero-caption">
+        {a.period.hasPayday ? '次の給料日まで' : '今月末まで'}、今日を含めて <strong className="num">{a.period.daysRemaining}日</strong>
+      </p>
+      {a.spentToday > 0 && (
+        <p className="hero-caption">
+          今日使った {formatYen(a.spentToday)} ・ 今日の残り {formatYen(a.todayRemaining)}
+        </p>
       )}
-      <button type="button" className="btn primary block" style={{ marginTop: 12 }} onClick={onAdd}>
+      <div className="hero-divider" aria-hidden="true" />
+      <div className="hero-balance">
+        <span>いまの残高</span>
+        <strong className="num">{a.balance === null ? '未登録' : formatYen(a.balance)}</strong>
+      </div>
+      {a.budget !== null && (
+        <div className="hero-budget">
+          <div className="hero-balance">
+            <span>予算の使用</span>
+            <span className="num">
+              {formatYen(a.budgetSpent)} / {formatYen(a.budget)}
+            </span>
+          </div>
+          <ProgressBar value={a.budgetSpent} max={a.budget} label="予算の使用状況" />
+        </div>
+      )}
+      {a.shortfall > 0 && (
+        <p className="banner warn small" style={{ marginTop: 12, marginBottom: 0 }}>
+          予定より {formatYen(a.shortfall)} 足りない見込みです。「計算の内訳」で調整方法を確認できます。
+        </p>
+      )}
+      <button type="button" className="btn hero-button block" onClick={onAdd}>
         <Icon name="plus" /> 支出を記録
       </button>
-      <p className="muted small" style={{ marginTop: 8, marginBottom: 0 }}>
-        ※ 登録された情報にもとづく目安です。
-      </p>
-    </Card>
+      <p className="hero-note">※ 登録された情報にもとづく目安です。</p>
+    </section>
   );
 }
 

@@ -33,6 +33,13 @@
   --safe-right: env(safe-area-inset-right, 0px);
   --dur: 160ms;
   --kb: 0px;
+  /* お金カード（濃い緑の面に白文字。コントラストは e2e/home.spec.ts で検証） */
+  --hero-bg: #365f50;
+  --hero-text: #ffffff;
+  --hero-sub: #dceae2;
+  --hero-btn-bg: #f4f8ef;
+  --hero-btn-text: #2c4f42;
+  --hero-track: rgba(255, 255, 255, 0.28);
   color-scheme: light;
 }
 
@@ -54,6 +61,11 @@
     --ok: #7cc0ad;
     --focus: #8bb8f0;
     --shadow: none;
+    --hero-bg: #2f5443;
+    --hero-text: #ffffff;
+    --hero-sub: #d6e6dc;
+    --hero-btn-bg: #e6f1e9;
+    --hero-btn-text: #1f3d31;
     color-scheme: dark;
   }
 }
@@ -74,6 +86,11 @@
   --ok: #7cc0ad;
   --focus: #8bb8f0;
   --shadow: none;
+  --hero-bg: #2f5443;
+  --hero-text: #ffffff;
+  --hero-sub: #d6e6dc;
+  --hero-btn-bg: #e6f1e9;
+  --hero-btn-text: #1f3d31;
   color-scheme: dark;
 }
 
@@ -291,7 +308,8 @@ a {
   width: 100%;
 }
 .btn.small {
-  min-height: 40px;
+  /* タップ領域は 44px 以上（アクセシビリティ） */
+  min-height: 44px;
   padding: 6px 14px;
   font-size: 0.9rem;
 }
@@ -539,7 +557,7 @@ textarea:focus {
 }
 .segmented button {
   flex: 1;
-  min-height: 40px;
+  min-height: 44px;
   border: none;
   border-radius: 999px;
   background: transparent;
@@ -725,7 +743,7 @@ textarea:focus {
   color: #fff;
 }
 .toast .btn {
-  min-height: 40px;
+  min-height: 44px;
   background: transparent;
   color: inherit;
   border-color: currentColor;
@@ -972,7 +990,7 @@ details.disclosure[open] > summary::before {
 }
 .chip {
   flex: none;
-  min-height: 40px;
+  min-height: 44px;
   padding: 6px 14px;
   border-radius: 999px;
   border: 1px solid var(--border);
@@ -986,4 +1004,194 @@ details.disclosure[open] > summary::before {
   background: var(--primary);
   border-color: var(--primary);
   color: var(--primary-ink);
+}
+
+/* ---------- 枠線だけのボタン（控えめな操作） ---------- */
+.btn.outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}
+
+/* ---------- ホーム：お金カード（設定済み） ---------- */
+.money-hero {
+  background: var(--hero-bg);
+  color: var(--hero-text);
+  border-radius: var(--radius);
+  padding: 18px 18px 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+.money-hero-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.money-hero-head h2 {
+  margin: 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.money-hero-link {
+  color: var(--hero-text);
+  font-weight: 600;
+  font-size: 0.9rem;
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  text-underline-offset: 3px;
+}
+.hero-amount {
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 6px 0 4px;
+  overflow-wrap: anywhere;
+}
+.hero-amount small {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--hero-sub);
+  margin-left: 4px;
+}
+.hero-caption {
+  color: var(--hero-sub);
+  font-size: 0.95rem;
+  margin: 0 0 4px;
+}
+.hero-caption strong {
+  color: var(--hero-text);
+  font-size: 1.05rem;
+  /* 「5日」が「5」と「日」に分かれて改行されないように */
+  white-space: nowrap;
+}
+.hero-divider {
+  height: 1px;
+  background: var(--hero-track);
+  margin: 12px 0;
+}
+.hero-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--hero-sub);
+  font-size: 0.95rem;
+}
+.hero-balance strong {
+  color: var(--hero-text);
+  font-size: 1.15rem;
+  white-space: nowrap;
+}
+.hero-budget {
+  margin-top: 10px;
+}
+.hero-budget .progress {
+  background: var(--hero-track);
+  margin-top: 4px;
+}
+.hero-budget .progress > div {
+  background: var(--hero-text);
+}
+.btn.hero-button {
+  margin-top: 14px;
+  background: var(--hero-btn-bg);
+  border-color: var(--hero-btn-bg);
+  color: var(--hero-btn-text);
+}
+.hero-note {
+  color: var(--hero-sub);
+  font-size: 0.875rem;
+  margin: 8px 0 0;
+}
+
+/* ---------- 保存状況の表示 ---------- */
+.sync-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 6px 4px 6px 0;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+.sync-badge-icon {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.sync-badge-text {
+  display: block;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.sync-badge-detail {
+  display: block;
+  color: var(--text-2);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+.sync-badge-chev {
+  flex: none;
+  color: var(--text-2);
+}
+
+/* ---------- ブランド表示（日付の見出しより控えめに） ---------- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-2);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.brand img {
+  border-radius: 5px;
+  flex: none;
+}
+
+/* ---------- 励ましの一言 ---------- */
+.gentle-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--primary-soft);
+  color: var(--text);
+}
+.gentle-card p {
+  margin: 0;
+  font-weight: 600;
+}
+.gentle-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex: none;
+}
+
+/* カード見出しの右側のリンク（「計算の内訳」「すべて」など）は単語の途中で改行しない。
+   幅が足りないときは、見出しとリンクを別の行に分ける */
+.card-title {
+  flex-wrap: wrap;
+}
+.card-title .btn,
+.money-hero-link {
+  white-space: nowrap;
 }

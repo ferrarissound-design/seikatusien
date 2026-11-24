@@ -40,7 +40,7 @@ function serviceWorkerPlugin(): Plugin {
     apply: 'build',
     generateBundle(_opts, bundle) {
       const files = Object.keys(bundle).filter((f) => !f.endsWith('.map') && f !== 'sw.js');
-      const statics = ['index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/maskable-512.png'];
+      const statics = ['index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/maskable-512.png', 'icons/brand-heart.svg'];
       const precache = Array.from(new Set([...statics, ...files])).map((f) => `${base}${f}`);
       const src = readFileSync(resolve(import.meta.dirname, 'sw/sw.js'), 'utf8')
         .replaceAll('__BUILD_VERSION__', buildVersion)

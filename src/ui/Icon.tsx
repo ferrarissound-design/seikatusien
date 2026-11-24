@@ -26,6 +26,9 @@ const paths: Record<string, string> = {
   calendar: 'M4 7h16v13H4V7Zm0 4h16M8 3v4m8-4v4',
   play: 'M7 5v14l12-7L7 5Z',
   undo: 'M9 14 4 9l5-5M4 9h11a5 5 0 0 1 0 10h-3',
+  phone: 'M8 3h8a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm3 15h2',
+  alert: 'M12 4 2.5 20h19L12 4Zm0 6v4m0 3h.01',
+  'cloud-check': 'M7 18a4 4 0 0 1-.6-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9H7Zm2.5-4.5 2 2 3.5-3.5',
 };
 
 export function Icon({ name, size = 24, title }: { name: keyof typeof paths | string; size?: number; title?: string }) {
