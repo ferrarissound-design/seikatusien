@@ -67,6 +67,14 @@ begin
   assert r2 > r1, 'rev increases';
 end $$;
 
+-- 体重の記録（weights）も保存できる
+do $$
+declare r jsonb;
+begin
+  r := public.lp_push('[{"opId":"aaaaaaaa-0000-0000-0000-000000000007","table":"weights","id":"w1","baseVersion":0,"data":{"id":"w1","weightCg":6545},"deleted":false}]');
+  assert r->0->>'status' = 'ok', 'weights should be accepted: ' || r::text;
+end $$;
+
 -- 他人の user_id で直接 insert はできない
 do $$
 begin
@@ -85,6 +93,7 @@ declare r jsonb;
 begin
   -- Alice の行は見えない
   assert (select count(*) from public.records) = 0, 'bob must not see alice rows';
+  assert (select count(*) from public.records where table_name = 'weights') = 0, 'bob must not see alice weights';
   -- Alice の行は更新・削除できない（0件）
   update public.records set data = '{"hacked":true}' where id = 'tx1';
   delete from public.records where id = 'tx1';

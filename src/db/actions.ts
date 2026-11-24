@@ -1,6 +1,6 @@
 import { getDb } from './db';
 import { createRecord, updateRecord, softDelete, restore, bulkUpdate, getSettings, saveSettings, describeSaveError } from './repo';
-import type { Checklist, CheckItem, CheckHistory, Task, Subtask, Transaction, FixedCost, TemplateType, Recurrence } from './types';
+import type { Checklist, CheckItem, CheckHistory, Task, Subtask, Transaction, FixedCost, TemplateType, Recurrence, WeightEntry } from './types';
 import { BUILTIN_TEMPLATES, TEMPLATE_LABELS } from './templates';
 import { logicalDate, today, addDays, type DateStr } from '../lib/date';
 import { nextOccurrence } from '../lib/recurrence';
@@ -324,4 +324,18 @@ export async function markFixedCostPaid(fc: FixedCost, period: string, date: Dat
 /** 現在の残高を登録し直す（以降の記録はこの金額を基準に増減） */
 export async function setBalance(amount: number) {
   await saveSettings({ balanceAmount: amount, balanceAsOf: nowIso() });
+}
+
+// ====================== 体重 ======================
+
+export async function addWeight(data: { weightCg: number; date?: DateStr; time?: string | null; memo?: string }) {
+  if (!Number.isSafeInteger(data.weightCg) || data.weightCg < 100 || data.weightCg > 50000) throw new Error('invalid weight');
+  const now = new Date();
+  const hhmm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  return createRecord<WeightEntry>('weights', {
+    date: data.date ?? today(),
+    time: data.time === undefined ? hhmm : data.time,
+    weightCg: data.weightCg,
+    memo: (data.memo ?? '').trim().slice(0, 1000),
+  });
 }

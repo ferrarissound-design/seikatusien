@@ -70,6 +70,7 @@ export function Onboarding() {
           <Toggle label="🎒 忘れ物チェック" checked={f.checklists} onChange={(v) => void saveSettings({ features: { ...f, checklists: v } })} />
           <Toggle label="✏️ タスク（やること）" checked={f.tasks} onChange={(v) => void saveSettings({ features: { ...f, tasks: v } })} />
           <Toggle label="👛 お金の管理" checked={f.money} onChange={(v) => void saveSettings({ features: { ...f, money: v } })} />
+          <Toggle label="⚖️ 体重の記録" checked={f.weight} onChange={(v) => void saveSettings({ features: { ...f, weight: v } })} />
           <button type="button" className="btn primary block" style={{ marginTop: 12 }} onClick={next}>
             次へ
           </button>

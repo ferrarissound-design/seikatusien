@@ -20,5 +20,6 @@ $PSQL < "$ROOT/supabase/tests/supabase_shim.sql"
 for i in 1 2; do
   $PSQL < "$ROOT/supabase/migrations/20261124000000_init.sql"
   $PSQL < "$ROOT/supabase/migrations/20261124000100_rls.sql"
+  $PSQL < "$ROOT/supabase/migrations/20261125000000_weights.sql"
 done
 $PSQL < "$ROOT/supabase/tests/rls_test.sql"

@@ -126,7 +126,7 @@ export interface Reminder extends BaseRecord {
 
 export interface AppSettings extends BaseRecord {
   // id は常に 'settings'
-  features: { checklists: boolean; tasks: boolean; money: boolean };
+  features: { checklists: boolean; tasks: boolean; money: boolean; weight: boolean };
   /** 給料日（1-31）。null = 未設定 */
   paydayDay: number | null;
   /** 給料日が土日の場合の扱い */
@@ -148,6 +148,19 @@ export interface AppSettings extends BaseRecord {
   timezone: string;
 }
 
+/**
+ * 体重の記録。健康管理を自分で行うための記録で、判定（BMI・目標）は行わない。
+ * 小数の誤差を避けるため、0.01kg 単位の整数（センチキログラム）で保存する。
+ * 例：65.45kg → weightCg = 6545
+ */
+export interface WeightEntry extends BaseRecord {
+  date: DateStr;
+  /** "HH:MM"。記録した時刻（同じ日に複数回測る人のため）。不明なら null */
+  time: string | null;
+  weightCg: number;
+  memo: string;
+}
+
 export const SYNC_TABLES = [
   'checklists',
   'checkItems',
@@ -159,6 +172,7 @@ export const SYNC_TABLES = [
   'savingsGoals',
   'reminders',
   'settings',
+  'weights',
 ] as const;
 
 export type SyncTable = (typeof SYNC_TABLES)[number];

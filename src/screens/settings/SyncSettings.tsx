@@ -24,6 +24,7 @@ const TABLE_LABEL: Record<string, string> = {
   savingsGoals: '貯金の目標',
   reminders: 'リマインダー',
   settings: '設定',
+  weights: '体重',
 };
 
 export function SyncSettings() {
