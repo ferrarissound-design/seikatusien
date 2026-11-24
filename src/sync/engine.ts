@@ -3,6 +3,7 @@ import type { BaseRecord, Conflict, OutboxEntry, SyncTable } from '../db/types';
 import { MONEY_TABLES, SYNC_TABLES } from '../db/types';
 import { getMeta, setMeta, normalizeSettings } from '../db/repo';
 import { uuid, nowIso } from '../lib/id';
+import { stableStringify } from '../lib/stable';
 import type { PushOp, PushResult, ServerRow, SyncTransport } from './transport';
 
 /**
@@ -48,7 +49,7 @@ function contentEqual(a: Record<string, unknown>, b: Record<string, unknown>): b
     const c = { ...o };
     delete c.updatedAt;
     delete c.serverVersion;
-    return JSON.stringify(c, Object.keys(c).sort());
+    return stableStringify(c);
   };
   return strip(a) === strip(b);
 }
@@ -180,7 +181,7 @@ export class SyncEngine {
     await this.db.transaction('rw', [this.db.outbox, this.db.conflicts, t], async () => {
       const local = (await t.get(entry.recordId)) as Row | undefined;
       const localData = local ? toPayload(local) : (entry.payload ?? {});
-      const serverData = { ...server.data, deleted: server.deleted ? 1 : 0 };
+      const serverData: Record<string, unknown> = { ...server.data, deleted: server.deleted ? 1 : 0 };
 
       // 内容が同じなら競合ではない（同じ変更が別経路で届いた）
       if (contentEqual(localData, serverData)) {

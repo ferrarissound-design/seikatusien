@@ -3,6 +3,7 @@ import { SYNC_TABLES, type SyncTable, type BaseRecord } from '../db/types';
 import { enqueue, setMeta, getMeta } from '../db/repo';
 import { validateRecord } from './validate';
 import { nowIso } from '../lib/id';
+import { stableStringify } from '../lib/stable';
 import { emit } from '../lib/events';
 
 export const BACKUP_APP_ID = 'life-partner';
@@ -47,7 +48,7 @@ export interface ImportPlan {
 function stableJson(o: Record<string, unknown>) {
   const c = { ...o };
   delete c.serverVersion;
-  return JSON.stringify(c, Object.keys(c).sort());
+  return stableStringify(c);
 }
 
 /** バックアップファイルを解析し、復元内容を計画する（まだ書き込まない） */

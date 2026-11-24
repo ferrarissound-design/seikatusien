@@ -35,7 +35,7 @@ export function describeRecurrence(r: Recurrence): string {
     case 'weekly':
       return r.weekdays.length === 0
         ? '毎週'
-        : `毎週 ${[...r.weekdays].sort().map((w) => WEEKDAY_JA[w]).join('・')}`;
+        : `毎週 ${[...r.weekdays].sort((a, b) => a - b).map((w) => WEEKDAY_JA[w]).join('・')}`;
     case 'monthly':
       return `毎月${r.day}日`;
   }

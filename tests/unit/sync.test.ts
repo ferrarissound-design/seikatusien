@@ -213,3 +213,11 @@ describe('同期エンジン', () => {
     expect(await otherDb.tasks.count()).toBe(0);
   });
 });
+
+describe('内容比較', () => {
+  it('ネストした値の違いも検出する', async () => {
+    const { stableStringify } = await import('../../src/lib/stable');
+    expect(stableStringify({ a: 1, r: { kind: 'weekly', weekdays: [1] } })).not.toBe(stableStringify({ r: { kind: 'weekly', weekdays: [2] }, a: 1 }));
+    expect(stableStringify({ a: 1, b: { y: 2, x: 1 } })).toBe(stableStringify({ b: { x: 1, y: 2 }, a: 1 }));
+  });
+});

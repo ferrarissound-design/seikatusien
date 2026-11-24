@@ -7,6 +7,7 @@ import {
   addDays,
   type DateStr,
   monthKey,
+  toDateStr,
 } from './date';
 import type { FixedCost, Transaction, AppSettings } from '../db/types';
 
@@ -142,7 +143,10 @@ export function upcomingFixedCosts(
   const out: UpcomingFixed[] = [];
   for (const fc of fixedCosts) {
     if (fc.deleted || !fc.active) continue;
-    for (const due of fixedCostDueDates(fc, period.start, period.nextPayday)) {
+    // 登録より前の支払日は「登録時点で支払済み」とみなす（登録した日の分は含める）
+    const registered = toDateStr(new Date(fc.createdAt));
+    const from = registered > period.start ? registered : period.start;
+    for (const due of fixedCostDueDates(fc, from, period.nextPayday)) {
       const key = `${fc.id}:${monthKey(due)}`;
       if (paid.has(key)) continue;
       out.push({ fixedCost: fc, dueDate: due, period: monthKey(due), overdue: due < todayStr });

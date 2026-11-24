@@ -180,10 +180,20 @@ describe('今日使える金額', () => {
     expect(Number.isInteger(r.perDay)).toBe(true);
   });
   it('期間外の固定費は含めない', () => {
-    const r = upcomingFixedCosts([fc({ dayOfMonth: 26 })], [], getPayPeriod('2026-11-20', 25), '2026-11-20');
+    const r = upcomingFixedCosts([fc({ dayOfMonth: 26, createdAt: '2026-09-01T00:00:00.000Z' })], [], getPayPeriod('2026-11-20', 25), '2026-11-20');
     // 10/25〜11/24 の間の26日 = 10/26（期限済み・未払い）
     expect(r.map((x) => x.dueDate)).toEqual(['2026-10-26']);
     expect(r[0].overdue).toBe(true);
+  });
+});
+
+describe('固定費の登録日', () => {
+  it('登録より前の支払日は差し引かない', () => {
+    const f = fc({ dayOfMonth: 27, createdAt: '2026-11-24T03:00:00.000Z' });
+    const p = getPayPeriod('2026-11-24', 25, 'before'); // 10/23〜11/25
+    expect(upcomingFixedCosts([f], [], p, '2026-11-24')).toHaveLength(0);
+    const p2 = getPayPeriod('2026-11-26', 25, 'before');
+    expect(upcomingFixedCosts([f], [], p2, '2026-11-26').map((u) => u.dueDate)).toEqual(['2026-11-27']);
   });
 });
 
