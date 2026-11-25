@@ -1270,3 +1270,10 @@ details.disclosure[open] > summary::before {
 .weight-table th:last-child {
   text-align: right;
 }
+
+/* ---------- バックアップの声かけ ---------- */
+/* 幅が足りないときはボタンを2段に分け、文字が途中で改行されないようにする */
+.backup-nudge .btn {
+  flex: 1 1 9.5em;
+  white-space: nowrap;
+}

@@ -12,6 +12,7 @@ import { useMoneyData } from './useMoneyData';
 import { moneyCardState } from './moneyCardState';
 import { QuickExpense } from './QuickExpense';
 import { SyncBadge } from './SyncBadge';
+import { BackupNudge } from './BackupNudge';
 import { TaskSheet } from './Tasks';
 import { WeightSheet } from './Weight';
 import { formatKg, formatDiff, sortNewestFirst } from '../lib/weight';
@@ -37,6 +38,8 @@ export function Home() {
         <h1 style={{ marginTop: 0 }}>{formatJa(todayStr)}</h1>
         <SyncBadge />
       </header>
+
+      <BackupNudge />
 
       <Notices />
 
